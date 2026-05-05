@@ -27,12 +27,14 @@ export function clearAdminToken() {
 }
 
 async function request(path, options) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...options?.headers,
+  };
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
     ...options,
+    headers,
   });
 
   const data = await response.json().catch(() => null);
