@@ -314,28 +314,55 @@ app.post("/api/subscriptions", optionalUser, async (request, response, next) => 
       return response.status(400).json({ message: error });
     }
 
-    const result = await pool.query(
-      `
-        INSERT INTO subscriptions (user_id, plan_id, investment_amount)
-        VALUES ($1, $2, $3)
-        RETURNING
-          id,
-          user_id AS "userId",
-          plan_id AS "planId",
-          investment_amount AS "investmentAmount",
-          created_at AS "createdAt";
-      `,
-      [request.user?.userId ?? null, value.planId, value.investmentAmount],
-    );
+    let result;
+
+    try {
+      result = await pool.query(
+        `
+          INSERT INTO subscriptions (user_id, plan_id, investment_amount)
+          VALUES ($1, $2, $3)
+          RETURNING
+            id,
+            user_id AS "userId",
+            plan_id AS "planId",
+            investment_amount AS "investmentAmount",
+            created_at AS "createdAt";
+        `,
+        [request.user?.userId ?? null, value.planId, value.investmentAmount],
+      );
+    } catch (error) {
+      if (error.code !== "42703") {
+        throw error;
+      }
+
+      result = await pool.query(
+        `
+          INSERT INTO subscriptions (plan_id, investment_amount)
+          VALUES ($1, $2)
+          RETURNING
+            id,
+            plan_id AS "planId",
+            investment_amount AS "investmentAmount",
+            created_at AS "createdAt";
+        `,
+        [value.planId, value.investmentAmount],
+      );
+    }
 
     if (request.user?.userId && value.investmentAmount > 0) {
-      await pool.query(
-        `
-          INSERT INTO investments (user_id, plan_id, amount)
-          VALUES ($1, $2, $3);
-        `,
-        [request.user.userId, value.planId, value.investmentAmount],
-      );
+      try {
+        await pool.query(
+          `
+            INSERT INTO investments (user_id, plan_id, amount)
+            VALUES ($1, $2, $3);
+          `,
+          [request.user.userId, value.planId, value.investmentAmount],
+        );
+      } catch (error) {
+        if (error.code !== "42P01") {
+          throw error;
+        }
+      }
     }
 
     return response.status(201).json(result.rows[0]);
