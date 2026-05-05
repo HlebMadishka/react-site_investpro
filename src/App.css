@@ -1,0 +1,51 @@
+.glow-orb {
+  animation: pulse-drift 10s ease-in-out infinite;
+}
+
+.glow-orb-delay {
+  animation-delay: -4s;
+}
+
+.float-card {
+  animation: float-card 7s ease-in-out infinite;
+}
+
+.chart-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.9));
+}
+
+.chart-line {
+  transform: skewY(-8deg);
+  box-shadow: 0 0 28px rgba(125, 211, 252, 0.45);
+}
+
+@keyframes pulse-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(18px, -12px, 0) scale(1.08);
+  }
+}
+
+@keyframes float-card {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
