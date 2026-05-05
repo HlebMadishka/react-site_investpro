@@ -6,7 +6,7 @@ export function isEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value));
 }
 
-export function validateLead(body) {
+export function validateLead(body = {}) {
   const lead = {
     name: cleanString(body.name, 120),
     email: cleanString(body.email, 180).toLowerCase(),
@@ -25,7 +25,7 @@ export function validateLead(body) {
   return { value: lead };
 }
 
-export function validateSubscription(body) {
+export function validateSubscription(body = {}) {
   const planId = cleanString(body.planId, 40);
   const investmentAmount = Number(body.investmentAmount);
 
@@ -40,7 +40,7 @@ export function validateSubscription(body) {
   return { value: { planId, investmentAmount } };
 }
 
-export function validatePlan(body) {
+export function validatePlan(body = {}) {
   const plan = {
     title: cleanString(body.title, 120),
     averageRate: Number(body.averageRate),
@@ -62,7 +62,7 @@ export function validatePlan(body) {
   return { value: plan };
 }
 
-export function validateAuth(body, mode = "login") {
+export function validateAuth(body = {}, mode = "login") {
   const auth = {
     name: cleanString(body.name, 120),
     email: cleanString(body.email, 180).toLowerCase(),

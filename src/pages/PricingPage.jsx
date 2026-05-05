@@ -7,6 +7,7 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
   const [amount, setAmount] = useState("10000");
   const [apiPlans, setApiPlans] = useState([]);
   const [savingPlanId, setSavingPlanId] = useState("");
+  const [selectionStatus, setSelectionStatus] = useState("idle");
   const [selectionMessage, setSelectionMessage] = useState("");
 
   useEffect(() => {
@@ -15,7 +16,7 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
     getPlans()
       .then((items) => {
         if (!isMounted) return;
-        setApiPlans(items);
+        setApiPlans(Array.isArray(items) ? items : []);
       })
       .catch(() => {
         if (!isMounted) return;
@@ -36,29 +37,32 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
           return plan;
         }
 
+        const averageRate = Number(apiPlan.averageRate);
+
         return {
           ...plan,
-          title: apiPlan.title,
-          averageRate: Number(apiPlan.averageRate),
-          risk: apiPlan.risk,
-          profit: `${Math.round(Number(apiPlan.averageRate) * 100)}%`,
+          title: apiPlan.title || plan.title,
+          averageRate: Number.isFinite(averageRate) ? averageRate : plan.averageRate,
+          risk: apiPlan.risk || plan.risk,
+          profit: `${Math.round((Number.isFinite(averageRate) ? averageRate : plan.averageRate) * 100)}%`,
         };
       }),
     [apiPlans],
   );
 
   const selectedPlan =
-    visiblePlans.find((plan) => plan.id === selectedPlanId) ?? visiblePlans[1];
+    visiblePlans.find((plan) => plan.id === selectedPlanId) ?? visiblePlans[0];
 
   const numericAmount = Number(amount) || 0;
-  const annualProfit = numericAmount * selectedPlan.averageRate;
+  const annualProfit = numericAmount * (selectedPlan?.averageRate ?? 0);
   const finalBalance = numericAmount + annualProfit;
   const monthlyProfit = annualProfit / 12;
-  const rateLabel = Math.round(selectedPlan.averageRate * 100);
+  const rateLabel = Math.round((selectedPlan?.averageRate ?? 0) * 100);
 
   async function handlePlanSelect(planId) {
     onPlanSelect(planId);
     setSavingPlanId(planId);
+    setSelectionStatus("idle");
     setSelectionMessage("");
 
     try {
@@ -66,9 +70,11 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
         planId,
         investmentAmount: numericAmount,
       });
-      setSelectionMessage("Тариф сохранён в базе.");
+      setSelectionStatus("success");
+      setSelectionMessage("Тариф сохранен в базе.");
     } catch (error) {
-      setSelectionMessage(error.message);
+      setSelectionStatus("error");
+      setSelectionMessage(error.message || "Не удалось сохранить тариф.");
     } finally {
       setSavingPlanId("");
     }
@@ -81,8 +87,8 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
           Тарифные планы
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
-          Выбери стратегию под свой риск и доход, а затем посмотри прогноз по
-          сумме прямо в калькуляторе.
+          Выбери стратегию под свой риск и доход, а затем посмотри прогноз по сумме
+          прямо в калькуляторе.
         </p>
       </div>
 
@@ -113,9 +119,9 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
               <p className="mb-4 text-3xl font-bold text-white">{plan.profit}</p>
 
               <ul className="mb-6 space-y-2 text-sm text-slate-300">
-                <li>✔ {plan.risk}</li>
+                <li>✓ {plan.risk}</li>
                 {plan.features.map((feature) => (
-                  <li key={feature}>✔ {feature}</li>
+                  <li key={feature}>✓ {feature}</li>
                 ))}
               </ul>
 
@@ -139,7 +145,13 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
       </div>
 
       {selectionMessage ? (
-        <p className="mx-auto mt-6 max-w-xl rounded-2xl border border-emerald-300/20 bg-emerald-400/10 px-5 py-3 text-center text-sm text-emerald-100">
+        <p
+          className={`mx-auto mt-6 max-w-xl rounded-2xl border px-5 py-3 text-center text-sm ${
+            selectionStatus === "error"
+              ? "border-amber-300/20 bg-amber-400/10 text-amber-100"
+              : "border-emerald-300/20 bg-emerald-400/10 text-emerald-100"
+          }`}
+        >
           {selectionMessage}
         </p>
       ) : null}
@@ -158,15 +170,15 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
             <tbody className="text-slate-300">
               <tr className="border-t border-white/10">
                 <td className="p-4">AI аналитика</td>
-                <td className="p-4">—</td>
-                <td className="p-4">✔</td>
-                <td className="p-4">✔</td>
+                <td className="p-4">-</td>
+                <td className="p-4">✓</td>
+                <td className="p-4">✓</td>
               </tr>
               <tr className="border-t border-white/10">
                 <td className="p-4">Автоинвест</td>
-                <td className="p-4">✔</td>
-                <td className="p-4">✔</td>
-                <td className="p-4">✔</td>
+                <td className="p-4">✓</td>
+                <td className="p-4">✓</td>
+                <td className="p-4">✓</td>
               </tr>
               <tr className="border-t border-white/10">
                 <td className="p-4">Поддержка</td>
@@ -184,7 +196,7 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
           <div className="mb-6 flex items-center justify-between gap-4">
             <h3 className="text-2xl font-bold">Калькулятор доходности</h3>
             <span className="rounded-full border border-emerald-300/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
-              Тариф: {selectedPlan.title}
+              Тариф: {selectedPlan?.title}
             </span>
           </div>
 
@@ -203,25 +215,17 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
 
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                Ставка
-              </p>
-              <p className="mt-2 text-2xl font-bold text-cyan-200">
-                {rateLabel}%
-              </p>
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Ставка</p>
+              <p className="mt-2 text-2xl font-bold text-cyan-200">{rateLabel}%</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                В месяц
-              </p>
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">В месяц</p>
               <p className="mt-2 text-2xl font-bold text-emerald-200">
                 {formatCurrency(monthlyProfit)}
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                За год
-              </p>
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">За год</p>
               <p className="mt-2 text-2xl font-bold text-violet-200">
                 {formatCurrency(annualProfit)}
               </p>
@@ -232,7 +236,7 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
             type="button"
             className="mt-6 w-full rounded-2xl bg-gradient-to-r from-emerald-400 to-sky-400 py-4 font-bold text-slate-950 shadow-xl shadow-cyan-500/20"
           >
-            Рассчитано для тарифа {selectedPlan.title}
+            Рассчитано для тарифа {selectedPlan?.title}
           </button>
         </div>
 
@@ -246,9 +250,7 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
           <div className="mt-8 space-y-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-sm text-slate-400">Стартовый капитал</p>
-              <p className="mt-2 text-3xl font-bold">
-                {formatCurrency(numericAmount)}
-              </p>
+              <p className="mt-2 text-3xl font-bold">{formatCurrency(numericAmount)}</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-sm text-slate-400">Ожидаемая прибыль</p>
@@ -275,9 +277,7 @@ export default function PricingPage({ selectedPlanId, onPlanSelect }) {
               className="rounded-2xl border border-white/10 bg-white/5 p-6"
             >
               <h4 className="text-lg font-semibold">{item.question}</h4>
-              <p className="mt-3 text-sm leading-7 text-slate-300">
-                {item.answer}
-              </p>
+              <p className="mt-3 text-sm leading-7 text-slate-300">{item.answer}</p>
             </article>
           ))}
         </div>

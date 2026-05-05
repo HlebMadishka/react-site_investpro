@@ -18,8 +18,7 @@ export default function ContactsPage({ onNavigate }) {
           </h2>
           <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-300">
             Если нужен показ платформы, помощь с тарифом или корпоративное
-            решение, мы можем собрать сценарий под твои цели и подключиться в
-            удобном формате.
+            решение, мы соберем сценарий под твои цели и подключимся в удобном формате.
           </p>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -60,29 +59,24 @@ export default function ContactsPage({ onNavigate }) {
 
       <div className="mt-20 grid gap-10 lg:grid-cols-[1fr_1fr]">
         <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-cyan-500/10 via-slate-900/40 to-pink-500/10 p-8 shadow-2xl backdrop-blur">
-          <h3 className="text-3xl font-bold">Что ещё можно запросить</h3>
+          <h3 className="text-3xl font-bold">Что еще можно запросить</h3>
           <div className="mt-8 grid gap-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <h4 className="text-xl font-semibold">
-                Персональный разбор портфеля
-              </h4>
+              <h4 className="text-xl font-semibold">Персональный разбор портфеля</h4>
               <p className="mt-3 text-slate-300">
-                Аналитик разберёт текущую структуру активов и предложит план
-                оптимизации.
+                Аналитик разберет текущую структуру активов и предложит план оптимизации.
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <h4 className="text-xl font-semibold">Demo для команды</h4>
               <p className="mt-3 text-slate-300">
-                Проведём отдельную презентацию для партнёров, клиентов или
-                отдела продаж.
+                Проведем отдельную презентацию для партнеров, клиентов или отдела продаж.
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <h4 className="text-xl font-semibold">White-label решение</h4>
               <p className="mt-3 text-slate-300">
-                Подготовим брендированную версию платформы для инвестиционных
-                команд и студий.
+                Подготовим брендированную версию платформы для инвестиционных команд.
               </p>
             </div>
           </div>
@@ -91,8 +85,8 @@ export default function ContactsPage({ onNavigate }) {
         <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
           <h3 className="text-3xl font-bold">Глобальное присутствие</h3>
           <p className="mt-4 text-slate-300">
-            Для надёжности и скорости поддержки мы распределили команду между
-            несколькими точками и удалённым сервисом.
+            Для надежности и скорости поддержки команда распределена между
+            несколькими точками и удаленным сервисом.
           </p>
 
           <div className="mt-8 space-y-4">

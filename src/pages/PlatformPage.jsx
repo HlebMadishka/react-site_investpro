@@ -1,8 +1,4 @@
-import {
-  automationSteps,
-  integrations,
-  platformCards,
-} from "../siteData";
+import { automationSteps, integrations, platformCards } from "../siteData";
 
 export default function PlatformPage({ onNavigate }) {
   return (
@@ -20,9 +16,9 @@ export default function PlatformPage({ onNavigate }) {
             <span className="text-white">в одном умном интерфейсе</span>
           </h2>
           <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-300">
-            InvestPro объединяет аналитику, автоматизацию, уведомления и риск-
-            менеджмент в единую платформу. Здесь можно не только смотреть
-            графики, но и принимать решения быстрее и спокойнее.
+            InvestPro объединяет аналитику, автоматизацию, уведомления и
+            риск-менеджмент в единую платформу. Здесь можно смотреть графики,
+            выбирать стратегии и принимать решения спокойнее.
           </p>
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <button
@@ -69,7 +65,7 @@ export default function PlatformPage({ onNavigate }) {
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:col-span-2">
                 <p className="text-sm text-slate-400">AI рекомендует</p>
                 <p className="mt-2 text-lg font-semibold">
-                  Усилить долю защитных активов и удерживать ликвидность 18%
+                  Усилить долю защитных активов и удерживать ликвидность 18%.
                 </p>
               </div>
             </div>
@@ -111,9 +107,8 @@ export default function PlatformPage({ onNavigate }) {
         <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-violet-500/10 via-slate-900/40 to-cyan-500/10 p-8 shadow-2xl backdrop-blur">
           <h3 className="text-3xl font-bold">Экосистема и опции</h3>
           <p className="mt-4 max-w-2xl text-slate-300">
-            Добавил сюда полезные возможности, чтобы сайт выглядел сильнее и
-            богаче: интеграции, экспорт отчётов, телеграм-бот и подготовка white-
-            label сценариев для команд.
+            Интеграции, экспорт отчетов, Telegram-бот и white-label сценарии
+            помогают адаптировать платформу под команду или продукт.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">

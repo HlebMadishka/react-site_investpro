@@ -32,7 +32,7 @@ export default function LeadForm() {
       setForm(initialForm);
     } catch (error) {
       setStatus("error");
-      setMessage(error.message);
+      setMessage(error.message || "Не удалось отправить заявку.");
     }
   }
 
@@ -67,9 +67,9 @@ export default function LeadForm() {
         onChange={updateField}
         className="mt-4 w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none focus:border-cyan-300/50"
       >
-        <option value="start">Start</option>
-        <option value="balance">Balance</option>
-        <option value="pro">Pro</option>
+        <option value="start">Старт</option>
+        <option value="balance">Баланс</option>
+        <option value="pro">Про</option>
       </select>
 
       <textarea

@@ -12,16 +12,14 @@ const cardClasses = {
 function PortfolioChart({ points }) {
   const chartPoints = points.length ? points : [];
   const values = chartPoints.map((point) => point.value);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const min = values.length ? Math.min(...values) : 0;
+  const max = values.length ? Math.max(...values) : 1;
   const range = max - min || 1;
 
   const polyline = chartPoints
     .map((point, index) => {
       const x =
-        chartPoints.length === 1
-          ? 50
-          : (index / (chartPoints.length - 1)) * 100;
+        chartPoints.length === 1 ? 50 : (index / (chartPoints.length - 1)) * 100;
       const y = 82 - ((point.value - min) / range) * 64;
       return `${x},${y}`;
     })
@@ -34,7 +32,7 @@ function PortfolioChart({ points }) {
         preserveAspectRatio="none"
         className="h-40 w-full"
         role="img"
-        aria-label="Portfolio history"
+        aria-label="История портфеля"
       >
         <defs>
           <linearGradient id="portfolioLine" x1="0" x2="1" y1="0" y2="0">
@@ -42,15 +40,17 @@ function PortfolioChart({ points }) {
             <stop offset="100%" stopColor="#38bdf8" />
           </linearGradient>
         </defs>
-        <polyline
-          points={polyline}
-          fill="none"
-          stroke="url(#portfolioLine)"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="4"
-          vectorEffect="non-scaling-stroke"
-        />
+        {polyline ? (
+          <polyline
+            points={polyline}
+            fill="none"
+            stroke="url(#portfolioLine)"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="4"
+            vectorEffect="non-scaling-stroke"
+          />
+        ) : null}
       </svg>
 
       <div className="mt-3 grid grid-cols-6 gap-2 text-center text-xs text-slate-400">
@@ -79,11 +79,13 @@ export default function HomePage({ onNavigate }) {
       .then((data) => {
         if (!isMounted) return;
         setPortfolioData({
-          metrics: data.metrics.map((metric) => ({
-            ...metric,
-            classes: cardClasses[metric.id] ?? "from-white/10 to-transparent",
-          })),
-          history: data.history,
+          metrics: Array.isArray(data.metrics)
+            ? data.metrics.map((metric) => ({
+                ...metric,
+                classes: cardClasses[metric.id] ?? "from-white/10 to-transparent",
+              }))
+            : portfolio,
+          history: Array.isArray(data.history) ? data.history : [],
         });
       })
       .catch(() => {
@@ -97,7 +99,7 @@ export default function HomePage({ onNavigate }) {
   }, []);
 
   const portfolioCards = useMemo(
-    () => portfolioData.metrics.length ? portfolioData.metrics : portfolio,
+    () => (portfolioData.metrics.length ? portfolioData.metrics : portfolio),
     [portfolioData.metrics],
   );
 
@@ -146,7 +148,9 @@ export default function HomePage({ onNavigate }) {
               key={item.text}
               className="float-card rounded-xl bg-gradient-to-br from-white/10 to-transparent p-5 text-sm shadow-lg backdrop-blur"
             >
-              <span className="mr-2 text-lg">{item.icon}</span>
+              <span className="mr-2 text-xs uppercase tracking-[0.2em] text-cyan-200">
+                {item.icon}
+              </span>
               {item.text}
             </div>
           ))}
