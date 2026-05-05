@@ -3,6 +3,8 @@ const navItems = [
   { id: "platform", label: "Платформа" },
   { id: "pricing", label: "Тарифы" },
   { id: "contacts", label: "Контакты" },
+  { id: "account", label: "Кабинет" },
+  { id: "admin", label: "Admin" },
 ];
 
 export default function Header({ activePage, onNavigate }) {
@@ -18,30 +20,19 @@ export default function Header({ activePage, onNavigate }) {
             INVESTPRO
           </button>
 
-          <nav className="hidden items-center gap-8 text-sm font-semibold text-slate-200 md:flex">
-            {navItems.map((item) => {
-              const hoverClass =
-                item.id === "platform"
-                  ? "hover:text-blue-300"
-                  : item.id === "pricing"
-                    ? "hover:text-violet-300"
-                    : item.id === "contacts"
-                      ? "hover:text-pink-300"
-                      : "hover:text-emerald-300";
-
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onNavigate(item.id)}
-                  className={`transition ${
-                    activePage === item.id ? "text-cyan-300" : hoverClass
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
+          <nav className="hidden flex-wrap items-center gap-5 text-sm font-semibold text-slate-200 md:flex">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => onNavigate(item.id)}
+                className={`transition hover:text-cyan-300 ${
+                  activePage === item.id ? "text-cyan-300" : ""
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
           </nav>
         </div>
 
@@ -55,10 +46,10 @@ export default function Header({ activePage, onNavigate }) {
           </button>
           <button
             type="button"
-            onClick={() => onNavigate("platform")}
+            onClick={() => onNavigate("account")}
             className="rounded-2xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition duration-300 hover:border-cyan-300/40 hover:bg-white/10"
           >
-            Смотреть демо
+            Мой кабинет
           </button>
         </div>
       </div>

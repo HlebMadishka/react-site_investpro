@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Header from "./components/Header";
 import "./App.css";
+import AccountPage from "./pages/AccountPage";
+import AdminPage from "./pages/AdminPage";
 import ContactsPage from "./pages/ContactsPage";
 import HomePage from "./pages/HomePage";
 import PlatformPage from "./pages/PlatformPage";
@@ -30,6 +32,8 @@ export default function App() {
         {activePage === "contacts" ? (
           <ContactsPage onNavigate={setActivePage} />
         ) : null}
+        {activePage === "account" ? <AccountPage /> : null}
+        {activePage === "admin" ? <AdminPage /> : null}
       </div>
     </main>
   );
